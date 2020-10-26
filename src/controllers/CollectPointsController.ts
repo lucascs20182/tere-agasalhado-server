@@ -1,14 +1,17 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm'; //repository pattern
 import CollectPoints from '../models/CollectPoint';
+import collectPointsView from '../views/collect_points_view';
 
 export default {
     async index(request: Request, response: Response) {
         const collectPointsRepository = getRepository(CollectPoints);
 
-        const collectPoints = await collectPointsRepository.find();
+        const collectPoints = await collectPointsRepository.find({
+            relations: ['images']
+        });
 
-        return response.json(collectPoints);
+        return response.json(collectPointsView.renderMany(collectPoints));
     },
 
     async show(request: Request, response: Response) {
@@ -16,9 +19,11 @@ export default {
 
         const collectPointsRepository = getRepository(CollectPoints);
 
-        const collectPoint = await collectPointsRepository.findOneOrFail(id);
+        const collectPoint = await collectPointsRepository.findOneOrFail(id, {
+            relations: ['images']
+        });
 
-        return response.json(collectPoint);
+        return response.json(collectPointsView.render(collectPoint));
     },
 
     async create(request: Request, response: Response) {
