@@ -3,6 +3,14 @@ import { getRepository } from 'typeorm'; //repository pattern
 import CollectPoints from '../models/CollectPoints';
 
 export default {
+    async index(request: Request, response: Response) {
+        const collectPointsRepository = getRepository(CollectPoints);
+
+        const collectPoints = await collectPointsRepository.find();
+
+        return response.json(collectPoints);
+    },
+
     async create(request: Request, response: Response) {
         const {
             name, latitude, longitude, about, instructions,
