@@ -11,6 +11,16 @@ export default {
         return response.json(collectPoints);
     },
 
+    async show(request: Request, response: Response) {
+        const { id } = request.params;
+
+        const collectPointsRepository = getRepository(CollectPoints);
+
+        const collectPoint = await collectPointsRepository.findOneOrFail(id);
+
+        return response.json(collectPoint);
+    },
+
     async create(request: Request, response: Response) {
         const {
             name, latitude, longitude, about, instructions,
