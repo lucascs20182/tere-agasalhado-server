@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm'; //repository pattern
-import CollectPoints from '../models/CollectPoints';
+import CollectPoints from '../models/CollectPoint';
 
 export default {
     async index(request: Request, response: Response) {
@@ -28,10 +28,15 @@ export default {
         } = request.body;
     
         const collectPointsRepository = getRepository(CollectPoints);
+
+        const requestImages = request.files as Express.Multer.File[];
+        const images = requestImages.map(image => {
+            return { path: image.filename }
+        })
     
         const collectPoint = collectPointsRepository.create({
             name, latitude, longitude, about, instructions,
-            opening_hours, open_on_weekends
+            opening_hours, open_on_weekends, images
         });
     
         await collectPointsRepository.save(collectPoint);
